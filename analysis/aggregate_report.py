@@ -35,4 +35,3 @@ def generate_full_report(handle: str, limit: int = 1000):
     return report
 
 
-
