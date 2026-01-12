@@ -19,20 +19,11 @@ It processes real submission data to extract topic-wise, difficulty-wise, and co
 
 ## Key Features
 
-- **Topic-wise performance analysis**  
-  Counts attempted, solved, and failed problems per topic.
-
-- **Weak / strong topic classification**  
-  Classifies topics based on success-rate thresholds.
-
-- **Difficulty-wise performance analysis**  
-  Analyzes performance in difficulty buckets such as `800–900` and `1000–1100`.
-
-- **Contest vs practice gap analysis**  
-  Measures how performance differs under contest pressure versus normal practice.
-
-- **Unified backend report generator**  
-  Combines all analytics into a single structured report.
+- Topic-wise performance analysis  
+- Weak / strong topic classification  
+- Difficulty-wise performance analysis  
+- Contest vs practice gap analysis  
+- Unified backend report generator  
 
 ---
 
@@ -51,16 +42,44 @@ cp-tracker/
 ├── run_analysis.py            # Backend runner script
 ├── requirements.txt
 └── README.md
+```
+
+---
 
 ## How to Run the Project
 
 ### 1. Activate virtual environment
+
 ```bash
-source ../venv/bin/activate
+source venv/bin/activate
+```
+
 ### 2. Run backend analysis
+
 ```bash
 python run_analysis.py
+```
 
-To analyze a different Codeforces user, update the handle inside run_analysis.py:
-```bash
+### 3. Analyze a different Codeforces user
+
+Edit `run_analysis.py`:
+
+```python
 HANDLE = "your_codeforces_handle"
+```
+
+---
+
+## Notes
+
+- Uses Codeforces public API (no authentication required)
+- Designed as a backend analytics engine
+- Easily extendable for UI or web dashboard integration
+
+---
+
+## Author
+
+Aditi Sahu  
+Integrated B.Tech + M.Tech  
+ABV-IIITM Gwalior
