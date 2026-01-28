@@ -82,5 +82,12 @@ if st.button("Analyze"):
             })
 
         df_difficulty = pd.DataFrame(difficulty_data)
+
+        df_difficulty["sort_key"] = df_difficulty["Difficulty Range"].apply(
+            lambda x: int(x.split("-")[0])
+        )
+        df_difficulty = df_difficulty.sort_values(by="sort_key").drop(columns=["sort_key"])
+
         st.dataframe(df_difficulty, use_container_width=True)
+
 
