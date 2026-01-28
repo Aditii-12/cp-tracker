@@ -43,11 +43,25 @@ if st.button("Analyze"):
 
         st.dataframe(df_topics, use_container_width=True)
 
-        # =======================
-        # Weak Topics (RAW for now)
-        # =======================
         st.subheader("Weak Topics")
-        st.json(report["weak_topics"])
+
+        weak_data = []
+        for topic, stats in report["weak_topics"].items():
+            weak_data.append({
+                "Topic": topic,
+                "Attempted": stats["attempted"],
+                "Solved": stats["solved"],
+                "Failed": stats["failed"],
+                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
+            })
+
+        if weak_data:
+            df_weak = pd.DataFrame(weak_data)
+            df_weak = df_weak.sort_values(by="Success Rate (%)")
+            st.dataframe(df_weak, use_container_width=True)
+        else:
+            st.write("No weak topics found 🎉")
+
 
         # =======================
         # Difficulty Analysis (RAW for now)
