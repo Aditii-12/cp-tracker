@@ -70,4 +70,17 @@ if st.button("Analyze"):
         # Difficulty Analysis (RAW for now)
         # =======================
         st.subheader("Difficulty Analysis")
-        st.json(report["difficulty_analysis"])
+
+        difficulty_data = []
+        for bucket, stats in report["difficulty_analysis"].items():
+            difficulty_data.append({
+                "Difficulty Range": bucket,
+                "Attempted": stats["attempted"],
+                "Solved": stats["solved"],
+                "Failed": stats["failed"],
+                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
+            })
+
+        df_difficulty = pd.DataFrame(difficulty_data)
+        st.dataframe(df_difficulty, use_container_width=True)
+
