@@ -56,11 +56,14 @@ if st.button("Analyze"):
             })
 
         if weak_data:
+            st.write(f"You have **{len(weak_data)} weak topics** that need attention.")
+    
             df_weak = pd.DataFrame(weak_data)
             df_weak = df_weak.sort_values(by="Success Rate (%)")
             st.dataframe(df_weak, use_container_width=True)
         else:
             st.write("No weak topics found 🎉")
+
 
 
         # =======================
