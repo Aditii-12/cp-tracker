@@ -43,7 +43,7 @@ if st.button("Analyze"):
 
         st.dataframe(df_topics, use_container_width=True)
 
-        st.subheader("Weak Topics")
+        st.caption("Topics with low success rate — focus on these to improve fastest.")
 
         weak_data = []
         for topic, stats in report["weak_topics"].items():
