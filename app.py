@@ -1,105 +1,130 @@
 import streamlit as st
-
 from run_analysis import generate_full_report
 
-
-# -------------------------------
+# --------------------------------------------------
 # Page config
-# -------------------------------
-st.set_page_config(
-    page_title="CP Tracker",
-    layout="centered"
-)
+# --------------------------------------------------
+st.set_page_config(page_title="CP Tracker", layout="centered")
 
-st.title("CP Tracker")
-st.write("Backend-first analytics for Codeforces users.")
-
-
-# -------------------------------
+# --------------------------------------------------
 # Session state initialization
-# -------------------------------
+# --------------------------------------------------
 if "report" not in st.session_state:
     st.session_state.report = None
 
+# --------------------------------------------------
+# UI Header
+# --------------------------------------------------
+st.title("CP Tracker")
+st.caption("Backend-first analytics for Codeforces users.")
 
-# -------------------------------
-# User input
-# -------------------------------
 handle = st.text_input("Enter Codeforces username")
 
-
-# -------------------------------
-# Analyze button
-# -------------------------------
+# --------------------------------------------------
+# Analyze Button
+# --------------------------------------------------
 if st.button("Analyze"):
-    if handle.strip():
-        st.session_state.report = generate_full_report(handle.strip())
-        st.success("Analysis complete!")
+    if not handle:
+        st.warning("Please enter a Codeforces username.")
     else:
-        st.warning("Please enter a username.")
+        with st.spinner("Analyzing submissions..."):
+            st.session_state.report = generate_full_report(handle)
+        st.success("Analysis complete!")
 
-
-# -------------------------------
-# Render results (ONLY if report exists)
-# -------------------------------
+# --------------------------------------------------
+# Render results ONLY if report exists
+# --------------------------------------------------
 report = st.session_state.report
 
 if report is not None:
 
-    # ===========================
+    # ==================================================
     # Topic Analysis
-    # ===========================
+    # ==================================================
     st.subheader("Topic Analysis")
 
-    topic_rows = []
-    for topic, stats in report["topic_analysis"].items():
-        attempted = stats["attempted"]
-        solved = stats["solved"]
-        failed = stats["failed"]
-        success_rate = (solved / attempted * 100) if attempted > 0 else 0
+    topic_data = report.get("topic_analysis", {})
 
-        topic_rows.append({
-            "Topic": topic,
-            "Attempted": attempted,
-            "Solved": solved,
-            "Failed": failed,
-            "Success Rate (%)": round(success_rate, 2)
-        })
+    if topic_data:
+        rows = []
+        for topic, stats in topic_data.items():
+            rows.append({
+                "Topic": topic,
+                "Attempted": stats["attempted"],
+                "Solved": stats["solved"],
+                "Failed": stats["failed"],
+                "Success Rate (%)": round(
+                    (stats["solved"] / stats["attempted"]) * 100, 2
+                ) if stats["attempted"] > 0 else 0
+            })
 
-    st.dataframe(topic_rows, use_container_width=True)
+        st.dataframe(rows, use_container_width=True)
+    else:
+        st.info("No topic data available.")
 
+    # ==================================================
+    # Weak Topics
+    # ==================================================
+    st.subheader("Weak Topics")
+    st.caption("Topics with low success rate based on past submissions.")
 
-    # ===========================
+    weak_topics = report.get("weak_topics", {})
+
+    if weak_topics:
+        rows = []
+        for topic, stats in weak_topics.items():
+            rows.append({
+                "Topic": topic,
+                "Attempted": stats["attempted"],
+                "Solved": stats["solved"],
+                "Failed": stats["failed"],
+                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
+            })
+
+        st.dataframe(rows, use_container_width=True)
+    else:
+        st.success("No weak topics detected 🎉")
+
+    # ==================================================
     # Contest vs Practice Gap
-    # ===========================
+    # ==================================================
     st.subheader("Contest vs Practice Gap")
-    st.caption("Difference between contest and practice success rates per topic.")
+    st.caption("Difference between practice and contest success rates per topic.")
 
-    gap_rows = []
-    for topic, stats in report["contest_practice_gap"].items():
-        gap_rows.append({
-            "Topic": topic,
-            "Contest Success Rate": round(stats["contest_success_rate"], 2),
-            "Practice Success Rate": round(stats["practice_success_rate"], 2),
-            "Gap (Practice - Contest)": round(stats["gap"], 2)
-        })
+    gap_data = report.get("contest_practice_gap", {})
 
-    st.dataframe(gap_rows, use_container_width=True)
+    if gap_data:
+        rows = []
+        for topic, stats in gap_data.items():
+            rows.append({
+                "Topic": topic,
+                "Contest Success (%)": round(stats["contest_success_rate"] * 100, 2),
+                "Practice Success (%)": round(stats["practice_success_rate"] * 100, 2),
+                "Gap (Practice − Contest)": round(stats["gap"] * 100, 2)
+            })
 
+        st.dataframe(rows, use_container_width=True)
+    else:
+        st.info("Contest vs practice data not available.")
 
-    # ===========================
+    # ==================================================
     # Difficulty Analysis
-    # ===========================
-    st.subheader("Difficulty Analysis")
+    # ==================================================
+    st.subheader("Difficulty-wise Performance")
 
-    difficulty_rows = []
-    for bucket, stats in report["difficulty_analysis"].items():
-        difficulty_rows.append({
-            "Difficulty Range": bucket,
-            "Attempted": stats["attempted"],
-            "Solved": stats["solved"],
-            "Failed": stats["failed"],
-            "Success Rate": round(stats["success_rate"], 2)
-        })
+    difficulty_data = report.get("difficulty_analysis", {})
 
-    st.dataframe(difficulty_rows, use_container_width=True)
+    if difficulty_data:
+        rows = []
+        for bucket, stats in difficulty_data.items():
+            rows.append({
+                "Difficulty Range": bucket,
+                "Attempted": stats["attempted"],
+                "Solved": stats["solved"],
+                "Failed": stats["failed"],
+                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
+            })
+
+        st.dataframe(rows, use_container_width=True)
+    else:
+        st.info("Difficulty analysis not available.")
