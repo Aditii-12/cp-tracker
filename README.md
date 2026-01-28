@@ -1,29 +1,32 @@
 # CP Tracker
 
-CP Tracker is a backend-driven analytics system that analyzes competitive programming performance using the Codeforces public API.  
-It processes real submission data to extract topic-wise, difficulty-wise, and contest-based performance insights.
+CP Tracker is a competitive programming analytics system that analyzes Codeforces performance using real submission data.  
+It combines a **robust analytics backend** with an **interactive Streamlit dashboard** to help users understand their strengths, weaknesses, and performance patterns.
 
 ---
 
 ## What This Project Does
 
-- Fetches real submission data from Codeforces for any user
-- Analyzes performance across multiple dimensions:
-  - Problem topics (dp, greedy, math, etc.)
-  - Problem difficulty levels
+- Fetches real submission data from the Codeforces public API
+- Analyzes hundreds of submissions for a given user
+- Breaks performance down across multiple dimensions:
+  - Topic-wise (greedy, dp, math, implementation, etc.)
+  - Difficulty-wise (rating buckets such as 800–900, 1000–1100)
   - Contest vs practice performance
-- Identifies weak and strong areas based on success-rate analysis
-- Generates a unified analytics report that can later be consumed by a UI or API
+- Identifies weak topics using success-rate analysis
+- Computes contest vs practice performance gaps
+- Displays all insights through a Streamlit-based dashboard
 
 ---
 
 ## Key Features
 
-- Topic-wise performance analysis  
-- Weak / strong topic classification  
-- Difficulty-wise performance analysis  
-- Contest vs practice gap analysis  
-- Unified backend report generator  
+- **Topic-wise analysis**: attempted, solved, failed, and success rate per topic  
+- **Weak topic detection** based on low success rates  
+- **Difficulty-wise performance analysis** across rating buckets  
+- **Contest vs practice gap analysis** to measure performance under pressure  
+- **Unified analytics backend** independent of the UI  
+- **Interactive Streamlit dashboard** for live analysis using a username input  
 
 ---
 
@@ -32,19 +35,21 @@ It processes real submission data to extract topic-wise, difficulty-wise, and co
 ```text
 cp-tracker/
 ├── api/
-│   └── codeforces.py          # Codeforces API integration
+│   └── codeforces.py            # Codeforces API integration
 ├── analysis/
-│   ├── topic_analysis.py      # Topic-wise aggregation
-│   ├── weak_topic_analysis.py # Weak/strong classification
-│   ├── difficulty_analysis.py # Difficulty-based analysis
-│   ├── contest_practice_gap.py# Contest vs practice comparison
-│   └── aggregate_report.py    # Unified analytics report
-├── run_analysis.py            # Backend runner script
+│   ├── topic_analysis.py        # Topic-wise aggregation
+│   ├── weak_topic_analysis.py   # Weak topic detection
+│   ├── difficulty_analysis.py   # Difficulty-based analysis
+│   ├── contest_practice_gap.py  # Contest vs practice comparison
+│   └── aggregate_report.py      # Unified analytics report
+├── run_analysis.py              # Backend report generator (CLI + UI)
+├── app.py                       # Streamlit dashboard
 ├── requirements.txt
 └── README.md
 ```
 
 ---
+
 
 ## How to Run the Project
 
@@ -54,19 +59,23 @@ cp-tracker/
 source venv/bin/activate
 ```
 
-### 2. Run backend analysis
+### 2. Install dependencies (first time only)
 
 ```bash
-python run_analysis.py
+pip install -r requirements.txt
 ```
 
-### 3. Analyze a different Codeforces user
+### 3. Run Streamlit dashboard
 
-Edit `run_analysis.py`:
 
 ```python
-HANDLE = "your_codeforces_handle"
+streamlit run app.py
+
 ```
+
+### 4. Analyze a Codeforces user
+- Enter the Codeforces handle directly in the Streamlit UI
+- Click Analyze to view topic analysis, weak topics, difficulty performance, and contest gaps
 
 ---
 
