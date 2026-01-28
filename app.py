@@ -1,109 +1,105 @@
 import streamlit as st
-import pandas as pd
-import run_analysis
 
-st.set_page_config(page_title="CP Tracker", layout="centered")
+from run_analysis import generate_full_report
+
+
+# -------------------------------
+# Page config
+# -------------------------------
+st.set_page_config(
+    page_title="CP Tracker",
+    layout="centered"
+)
 
 st.title("CP Tracker")
 st.write("Backend-first analytics for Codeforces users.")
 
-# -----------------------
-# User Input
-# -----------------------
+
+# -------------------------------
+# Session state initialization
+# -------------------------------
+if "report" not in st.session_state:
+    st.session_state.report = None
+
+
+# -------------------------------
+# User input
+# -------------------------------
 handle = st.text_input("Enter Codeforces username")
 
+
+# -------------------------------
+# Analyze button
+# -------------------------------
 if st.button("Analyze"):
-    if not handle:
-        st.warning("Please enter a username.")
-    else:
-        with st.spinner("Fetching data from Codeforces..."):
-            report = run_analysis.generate_full_report(handle)
-
+    if handle.strip():
+        st.session_state.report = generate_full_report(handle.strip())
         st.success("Analysis complete!")
+    else:
+        st.warning("Please enter a username.")
 
-        # =======================
-        # Topic Analysis
-        # =======================
-        st.subheader("Topic Analysis")
 
-        topic_data = []
-        for topic, stats in report["topic_analysis"].items():
-            attempted = stats["attempted"]
-            solved = stats["solved"]
-            failed = stats["failed"]
-            success_rate = round((solved / attempted) * 100, 2) if attempted > 0 else 0
+# -------------------------------
+# Render results (ONLY if report exists)
+# -------------------------------
+report = st.session_state.report
 
-            topic_data.append({
-                "Topic": topic,
-                "Attempted": attempted,
-                "Solved": solved,
-                "Failed": failed,
-                "Success Rate (%)": success_rate
-            })
+if report is not None:
 
-        df_topics = pd.DataFrame(topic_data)
-        df_topics = df_topics.sort_values(by="Attempted", ascending=False)
+    # ===========================
+    # Topic Analysis
+    # ===========================
+    st.subheader("Topic Analysis")
 
-        st.dataframe(df_topics, use_container_width=True)
+    topic_rows = []
+    for topic, stats in report["topic_analysis"].items():
+        attempted = stats["attempted"]
+        solved = stats["solved"]
+        failed = stats["failed"]
+        success_rate = (solved / attempted * 100) if attempted > 0 else 0
 
-        # =======================
-        # Weak Topics
-        # =======================
-        st.subheader("Weak Topics")
-        st.caption("Topics with low success rate — focus on these to improve fastest.")
+        topic_rows.append({
+            "Topic": topic,
+            "Attempted": attempted,
+            "Solved": solved,
+            "Failed": failed,
+            "Success Rate (%)": round(success_rate, 2)
+        })
 
-        weak_data = []
-        for topic, stats in report["weak_topics"].items():
-            weak_data.append({
-                "Topic": topic,
-                "Attempted": stats["attempted"],
-                "Solved": stats["solved"],
-                "Failed": stats["failed"],
-                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
-            })
+    st.dataframe(topic_rows, use_container_width=True)
 
-        if weak_data:
-            st.write(f"You have **{len(weak_data)} weak topics** that need attention.")
 
-            df_weak = pd.DataFrame(weak_data)
-            df_weak = df_weak.sort_values(by="Success Rate (%)")
+    # ===========================
+    # Contest vs Practice Gap
+    # ===========================
+    st.subheader("Contest vs Practice Gap")
+    st.caption("Difference between contest and practice success rates per topic.")
 
-            st.dataframe(df_weak, use_container_width=True)
-        else:
-            st.write("No weak topics found 🎉")
+    gap_rows = []
+    for topic, stats in report["contest_practice_gap"].items():
+        gap_rows.append({
+            "Topic": topic,
+            "Contest Success Rate": round(stats["contest_success_rate"], 2),
+            "Practice Success Rate": round(stats["practice_success_rate"], 2),
+            "Gap (Practice - Contest)": round(stats["gap"], 2)
+        })
 
-        # =======================
-        # Difficulty Analysis
-        # =======================
-        st.subheader("Difficulty Analysis")
+    st.dataframe(gap_rows, use_container_width=True)
 
-        difficulty_data = []
-        for bucket, stats in report["difficulty_analysis"].items():
-            difficulty_data.append({
-                "Difficulty Range": bucket,
-                "Attempted": stats["attempted"],
-                "Solved": stats["solved"],
-                "Failed": stats["failed"],
-                "Success Rate (%)": round(stats["success_rate"] * 100, 2)
-            })
 
-        df_difficulty = pd.DataFrame(difficulty_data)
+    # ===========================
+    # Difficulty Analysis
+    # ===========================
+    st.subheader("Difficulty Analysis")
 
-        # sort difficulty ranges
-        df_difficulty["sort_key"] = df_difficulty["Difficulty Range"].apply(
-            lambda x: int(x.split("-")[0])
-        )
-        df_difficulty = df_difficulty.sort_values(by="sort_key").drop(columns=["sort_key"])
+    difficulty_rows = []
+    for bucket, stats in report["difficulty_analysis"].items():
+        difficulty_rows.append({
+            "Difficulty Range": bucket,
+            "Attempted": stats["attempted"],
+            "Solved": stats["solved"],
+            "Failed": stats["failed"],
+            "Success Rate": round(stats["success_rate"], 2)
+        })
 
-        st.dataframe(df_difficulty, use_container_width=True)
-
-        # Difficulty insight
-        best_row = df_difficulty.loc[df_difficulty["Success Rate (%)"].idxmax()]
-        worst_row = df_difficulty.loc[df_difficulty["Success Rate (%)"].idxmin()]
-
-        st.caption(
-            f"Best performance: **{best_row['Difficulty Range']}** "
-            f"({best_row['Success Rate (%)']}%). "
-            f"Weakest performance: **{worst_row['Difficulty Range']}** "
-            f"({worst_row['Success Rate (%)']}%)."
-        )
+    st.dataframe(difficulty_rows, use_container_width=True)
