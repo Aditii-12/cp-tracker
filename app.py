@@ -7,6 +7,9 @@ st.set_page_config(page_title="CP Tracker", layout="centered")
 st.title("CP Tracker")
 st.write("Backend-first analytics for Codeforces users.")
 
+# -----------------------
+# User Input
+# -----------------------
 handle = st.text_input("Enter Codeforces username")
 
 if st.button("Analyze"):
@@ -19,7 +22,7 @@ if st.button("Analyze"):
         st.success("Analysis complete!")
 
         # =======================
-        # Topic Analysis (TABLE)
+        # Topic Analysis
         # =======================
         st.subheader("Topic Analysis")
 
@@ -43,6 +46,10 @@ if st.button("Analyze"):
 
         st.dataframe(df_topics, use_container_width=True)
 
+        # =======================
+        # Weak Topics
+        # =======================
+        st.subheader("Weak Topics")
         st.caption("Topics with low success rate — focus on these to improve fastest.")
 
         weak_data = []
@@ -57,17 +64,16 @@ if st.button("Analyze"):
 
         if weak_data:
             st.write(f"You have **{len(weak_data)} weak topics** that need attention.")
-    
+
             df_weak = pd.DataFrame(weak_data)
             df_weak = df_weak.sort_values(by="Success Rate (%)")
+
             st.dataframe(df_weak, use_container_width=True)
         else:
             st.write("No weak topics found 🎉")
 
-
-
         # =======================
-        # Difficulty Analysis (RAW for now)
+        # Difficulty Analysis
         # =======================
         st.subheader("Difficulty Analysis")
 
@@ -83,6 +89,7 @@ if st.button("Analyze"):
 
         df_difficulty = pd.DataFrame(difficulty_data)
 
+        # sort difficulty ranges
         df_difficulty["sort_key"] = df_difficulty["Difficulty Range"].apply(
             lambda x: int(x.split("-")[0])
         )
@@ -90,4 +97,13 @@ if st.button("Analyze"):
 
         st.dataframe(df_difficulty, use_container_width=True)
 
+        # Difficulty insight
+        best_row = df_difficulty.loc[df_difficulty["Success Rate (%)"].idxmax()]
+        worst_row = df_difficulty.loc[df_difficulty["Success Rate (%)"].idxmin()]
 
+        st.caption(
+            f"Best performance: **{best_row['Difficulty Range']}** "
+            f"({best_row['Success Rate (%)']}%). "
+            f"Weakest performance: **{worst_row['Difficulty Range']}** "
+            f"({worst_row['Success Rate (%)']}%)."
+        )
