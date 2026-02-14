@@ -6,6 +6,28 @@ from run_analysis import generate_full_report
 # --------------------------------------------------
 st.set_page_config(page_title="CP Tracker", layout="centered")
 
+st.markdown("""
+<style>
+.stApp {
+    background: radial-gradient(circle at 20% 20%, rgba(99,102,241,0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(139,92,246,0.15), transparent 40%),
+                linear-gradient(135deg, #0f172a, #111827);
+}
+
+/* Improve button */
+.stButton>button {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    font-weight: 600;
+}
+.stButton>button:hover {
+    opacity: 0.9;
+}
+</style>
+""", unsafe_allow_html=True)
 # --------------------------------------------------
 # Session state initialization
 # --------------------------------------------------
