@@ -1,4 +1,4 @@
-from analysis.topic_analysis import analyze_topic_performance
+from backend.services.analysis.topic_analysis import analyze_topic_performance
 
 
 def get_weak_topics(handle: str, threshold: float = 0.5):
