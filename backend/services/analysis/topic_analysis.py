@@ -1,5 +1,5 @@
 from collections import defaultdict
-from api.codeforces import get_user_submissions
+from backend.services.api.codeforces import get_user_submissions
 
 
 def analyze_topic_performance(handle: str, limit: int = 1000):
