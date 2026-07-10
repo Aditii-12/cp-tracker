@@ -1,4 +1,5 @@
-from api.codeforces import get_problemset, get_user_info, get_submissions
+from backend.services.api.codeforces import get_problemset, get_user_info, get_submissions
+
 
 def get_solved_set(submissions):
     solved = set()
@@ -7,6 +8,7 @@ def get_solved_set(submissions):
             p = s["problem"]
             solved.add((p.get("contestId", 0), p["index"]))
     return solved
+
 
 def recommend_problems(handle, weak_topics, count=5):
     if not weak_topics:
@@ -42,8 +44,8 @@ def recommend_problems(handle, weak_topics, count=5):
         ]
 
         unsolved.sort(key=lambda p: p.get("rating", 0))
-
         picked = unsolved[:count]
+
         if picked:
             recommendations[topic] = [
                 {
