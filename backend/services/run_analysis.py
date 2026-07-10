@@ -1,8 +1,7 @@
-from analysis.topic_analysis import analyze_topic_performance
-from analysis.weak_topic_analysis import get_weak_topics
-from analysis.difficulty_analysis import analyze_difficulty_performance
-from analysis.contest_practice_gap import analyze_contest_practice_gap
-
+from backend.services.analysis.topic_analysis import analyze_topic_performance
+from backend.services.analysis.weak_topic_analysis import get_weak_topics
+from backend.services.analysis.difficulty_analysis import analyze_difficulty_performance
+from backend.services.analysis.contest_practice_gap import analyze_contest_practice_gap
 
 
 def generate_full_report(handle: str):
