@@ -1,121 +1,121 @@
 # CP Tracker 📊
 
-**CP Tracker** is a competitive programming analytics tool that turns your raw Codeforces submission history into clear, actionable insights. It pairs a standalone analytics backend with an interactive Streamlit dashboard, so you can see exactly where you're strong, where you're weak, and how you perform under contest pressure versus casual practice.
+CP Tracker is a full-stack competitive programming analytics tool that turns your raw Codeforces submission history into clear, actionable insights. It pulls live data from the Codeforces API and analyzes your performance across topics, difficulty levels, and contest-vs-practice patterns.
 
----
+Originally built as a Streamlit app, CP Tracker has since been rearchitected into a proper full-stack application with a **FastAPI backend** and a **React (Vite) frontend**.
 
-## Why CP Tracker?
+## Features
 
-Most competitive programmers know their rating, but few can answer questions like:
+- **Topic Performance Analysis** — see solved vs failed problems broken down by topic tag
+- **Weak Topic Detection** — automatically flags topics where your success rate is low
+- **Difficulty Breakdown** — performance grouped by problem rating ranges
+- **Contest vs Practice Gap** — compares your success rate in live contests vs practice submissions, per topic
+- **Problem Recommendations** — suggests unsolved problems in your weak topics, matched to your current rating
 
-- *Which topics am I actually weak in — not just which ones I avoid?*
-- *Do I perform worse in contests than in practice, and by how much?*
-- *At which difficulty range does my success rate start dropping off?*
+## Tech Stack
 
-CP Tracker answers these by pulling your real submission data from the Codeforces public API and breaking it down across multiple dimensions — topic, difficulty, and contest vs. practice — instead of relying on a single rating number.
+**Backend**
+- FastAPI (Python)
+- Uvicorn (ASGI server)
+- Requests (Codeforces API client)
 
----
-
-## Key Features
-
-- 🧩 **Topic-wise analysis** — attempted, solved, failed, and success rate for every tag (DP, greedy, math, implementation, etc.)
-- 🎯 **Weak topic detection** — automatically flags topics with low success rates
-- 📈 **Difficulty-wise breakdown** — performance across rating buckets (800–900, 1000–1100, ...)
-- ⚔️ **Contest vs. practice gap analysis** — quantifies how much pressure affects your solve rate
-- 🔌 **Decoupled analytics engine** — the backend runs independently of the UI, so it can be reused in a CLI, script, or another frontend
-- 🖥️ **Interactive Streamlit dashboard** — enter a Codeforces handle and get live visual analysis
-
----
+**Frontend**
+- React (Vite)
+- Axios (API calls)
+- Recharts (data visualization)
 
 ## Project Structure
 
 ```
 cp-tracker/
-├── api/
-│   └── codeforces.py            # Codeforces API integration
-├── analysis/
-│   ├── topic_analysis.py        # Topic-wise aggregation
-│   ├── weak_topic_analysis.py   # Weak topic detection
-│   ├── difficulty_analysis.py   # Difficulty-based analysis
-│   ├── contest_practice_gap.py  # Contest vs practice comparison
-│   └── aggregate_report.py      # Unified analytics report
-├── run_analysis.py              # Backend report generator (CLI + UI)
-├── app.py                       # Streamlit dashboard
-├── requirements.txt
+├── backend/
+│   ├── main.py                  # FastAPI app entrypoint
+│   ├── routers/
+│   │   └── analysis.py          # /analyze/{handle} endpoint
+│   ├── services/
+│   │   ├── analysis/            # topic, difficulty, weak-topic, contest-gap analysis
+│   │   ├── api/
+│   │   │   └── codeforces.py    # Codeforces API client
+│   │   ├── recommender/
+│   │   │   └── suggest.py       # problem recommendation logic
+│   │   └── run_analysis.py      # aggregates all analysis into one report
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── client.js        # backend API client
+│   │   ├── components/          # chart & UI components
+│   │   ├── pages/
+│   │   │   └── Dashboard.jsx    # main dashboard page
+│   │   ├── App.jsx
+│   │   └── App.css
+│   └── package.json
+│
 └── README.md
 ```
-
----
 
 ## Getting Started
 
 ### Prerequisites
+- Python 3.10+
+- Node.js 18+
 
-- Python 3.8+
-- pip
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Aditii-12/cp-tracker.git
-cd cp-tracker
-```
-
-### 2. Set up a virtual environment
+### Backend Setup
 
 ```bash
 python -m venv venv
-source venv/bin/activate    # On Windows: venv\Scripts\activate
+source venv/bin/activate       # Windows: venv\Scripts\activate
+pip install -r backend/requirements.txt
+uvicorn backend.main:app --reload
 ```
 
-### 3. Install dependencies
+The API will be running at `http://localhost:8000`. Interactive API docs are available at `http://localhost:8000/docs`.
+
+### Frontend Setup
+
+In a separate terminal:
 
 ```bash
-pip install -r requirements.txt
+cd frontend
+npm install
+npm run dev
 ```
 
-### 4. Run the Streamlit dashboard
+The app will be running at `http://localhost:5173`.
 
-```bash
-streamlit run app.py
+### Usage
+
+1. Start both the backend and frontend servers (see above)
+2. Open `http://localhost:5173` in your browser
+3. Enter any Codeforces handle (e.g. `tourist`) and click **Analyze**
+4. View topic performance, weak topics, difficulty breakdown, and contest-vs-practice gap
+
+## API Reference
+
+### `GET /analyze/{handle}`
+
+Returns a full analytics report for the given Codeforces handle.
+
+**Example:** `GET /analyze/tourist`
+
+**Response:**
+```json
+{
+  "topic_analysis": { "dp": { "attempted": 318, "solved": 242, "failed": 76 } },
+  "weak_topics": { "interactive": { "attempted": 98, "solved": 41, "success_rate": 0.42 } },
+  "difficulty_analysis": { "800-900": { "attempted": 94, "solved": 88, "failed": 6 } },
+  "contest_practice_gap": { "dp": { "contest_success_rate": 0.75, "practice_success_rate": 0.78, "gap": 0.03 } }
+}
 ```
 
-### 5. Analyze a Codeforces user
+## Roadmap
 
-Enter any Codeforces handle in the dashboard and click **Analyze** to view:
-- Topic-wise performance
-- Weak topics
-- Difficulty-level breakdown
-- Contest vs. practice gap
+- [ ] Wire up the problem recommendation endpoint (`suggest.py`) to the frontend
+- [ ] Add loading skeletons and improved error states
+- [ ] Deploy backend (Render/Railway) and frontend (Vercel/Netlify)
+- [ ] Add rating progression chart over time
 
-> No authentication required — CP Tracker only uses the public Codeforces API.
+## License
 
----
-
-## Running Analysis Without the UI
-
-The analytics engine is fully decoupled from the dashboard, so you can also generate a report directly from the command line:
-
-```bash
-python run_analysis.py
-```
-
-This is useful if you want to script CP Tracker, feed its output into another tool, or build a different frontend on top of it.
-
----
-
-## Roadmap / Ideas for Extension
-
-- [ ] Historical trend tracking (rating and success rate over time)
-- [ ] Comparison mode between two handles
-- [ ] Export reports as PDF/CSV
-- [ ] Support for other judges (Codechef, AtCoder)
-
-Contributions and suggestions are welcome — feel free to open an issue or PR.
-
----
-
-## Author
-
-**Aditi Sahu**
-Integrated B.Tech + M.Tech, ABV-IIITM Gwalior
+This project is for educational/personal use.
