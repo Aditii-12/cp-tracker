@@ -1,4 +1,3 @@
 requests
-streamlit
 fastapi
 uvicorn[standard]
