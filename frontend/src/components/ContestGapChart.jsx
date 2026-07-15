@@ -5,13 +5,13 @@ export default function ContestGapChart({ contestGap }) {
 
   return (
     <div className="chart-card">
-      <h3>Contest vs Practice Gap</h3>
+      <h3>contest vs practice gap</h3>
       <table>
         <thead>
           <tr>
             <th>Topic</th>
-            <th>Contest Success</th>
-            <th>Practice Success</th>
+            <th>Contest</th>
+            <th>Practice</th>
             <th>Gap</th>
           </tr>
         </thead>
@@ -21,8 +21,8 @@ export default function ContestGapChart({ contestGap }) {
               <td>{topic}</td>
               <td>{(stats.contest_success_rate * 100).toFixed(0)}%</td>
               <td>{(stats.practice_success_rate * 100).toFixed(0)}%</td>
-              <td style={{ color: stats.gap > 0 ? "#f87171" : "#4ade80" }}>
-                {(stats.gap * 100).toFixed(0)}%
+              <td style={{ color: stats.gap > 0 ? "#e5484d" : "#2ea043", fontFamily: "var(--font-mono)" }}>
+                {stats.gap > 0 ? "+" : ""}{(stats.gap * 100).toFixed(0)}%
               </td>
             </tr>
           ))}

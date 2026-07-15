@@ -20,15 +20,29 @@ export default function TopicChart({ topicAnalysis }) {
 
   return (
     <div className="chart-card">
-      <h3>Topic Performance (Top 15)</h3>
+      <h3>topic performance (top 15)</h3>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data} layout="vertical" margin={{ left: 100 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" />
-          <YAxis type="category" dataKey="topic" width={140} />
-          <Tooltip />
-          <Bar dataKey="solved" fill="#4ade80" stackId="a" />
-          <Bar dataKey="failed" fill="#f87171" stackId="a" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#232935" />
+          <XAxis type="number" stroke="#4d5666" tick={{ fill: "#8b95a5", fontSize: 12 }} />
+          <YAxis
+            type="category"
+            dataKey="topic"
+            width={140}
+            stroke="#4d5666"
+            tick={{ fill: "#8b95a5", fontSize: 12 }}
+          />
+          <Tooltip
+            contentStyle={{
+              background: "#171c25",
+              border: "1px solid #232935",
+              borderRadius: 8,
+              fontSize: 13,
+            }}
+            labelStyle={{ color: "#e3e8ef" }}
+          />
+          <Bar dataKey="solved" fill="#2ea043" stackId="a" radius={[0, 0, 0, 0]} />
+          <Bar dataKey="failed" fill="#e5484d" stackId="a" radius={[0, 3, 3, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

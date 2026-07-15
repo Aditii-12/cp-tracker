@@ -19,15 +19,23 @@ export default function DifficultyChart({ difficultyAnalysis }) {
 
   return (
     <div className="chart-card">
-      <h3>Difficulty Breakdown</h3>
+      <h3>difficulty breakdown</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="range" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="solved" fill="#60a5fa" />
-          <Bar dataKey="failed" fill="#f87171" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#232935" />
+          <XAxis dataKey="range" stroke="#4d5666" tick={{ fill: "#8b95a5", fontSize: 12 }} />
+          <YAxis stroke="#4d5666" tick={{ fill: "#8b95a5", fontSize: 12 }} />
+          <Tooltip
+            contentStyle={{
+              background: "#171c25",
+              border: "1px solid #232935",
+              borderRadius: 8,
+              fontSize: 13,
+            }}
+            labelStyle={{ color: "#e3e8ef" }}
+          />
+          <Bar dataKey="solved" fill="#3b6fd6" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="failed" fill="#e5484d" radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

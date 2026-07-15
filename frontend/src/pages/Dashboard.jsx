@@ -42,8 +42,6 @@ export default function Dashboard() {
     }
     setLoading(false);
 
-    // Load secondary sections independently so one slow/failed
-    // call doesn't block the rest of the dashboard.
     setRecLoading(true);
     fetchRecommendations(handle)
       .then(setRecommendations)
@@ -63,45 +61,65 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h1>CP Tracker</h1>
-      <HandleForm onSubmit={handleAnalyze} loading={loading} />
-
-      {error && <p className="error">{error}</p>}
-
-      {loading && (
-        <div className="report-grid">
-          <div className="chart-card">
-            <h3>Topic Performance</h3>
-            <div className="skeleton skeleton-chart" />
-          </div>
-          <div className="chart-card">
-            <h3>Weak Topics</h3>
-            <div className="skeleton skeleton-list" />
-          </div>
+      <div className="terminal">
+        <div className="terminal-bar">
+          <span className="terminal-dot red" />
+          <span className="terminal-dot yellow" />
+          <span className="terminal-dot green" />
+          <span className="terminal-title">cp-tracker — zsh</span>
         </div>
-      )}
 
-      {report && (
-        <div className="report-grid">
-          <TopicChart topicAnalysis={report.topic_analysis} />
-          <WeakTopicsList weakTopics={report.weak_topics} />
-          <DifficultyChart difficultyAnalysis={report.difficulty_analysis} />
-          <ContestGapChart contestGap={report.contest_practice_gap} />
+        <div className="terminal-body">
+          <div className="brand">
+            <p className="brand-eyebrow">codeforces submission analytics</p>
+            <h1>
+              cp<span>_</span>tracker
+            </h1>
+          </div>
 
-          <RatingChart history={ratingHistory} loading={ratingLoading} />
-          {ratingError && !ratingLoading && (
-            <p className="error section-error">{ratingError}</p>
+          <HandleForm onSubmit={handleAnalyze} loading={loading} />
+          {!report && !loading && !error && (
+            <p className="hint">enter a handle and press run to pull live stats</p>
           )}
 
-          <RecommendationsList
-            recommendations={recommendations}
-            loading={recLoading}
-          />
-          {recError && !recLoading && (
-            <p className="error section-error">{recError}</p>
+          {error && <p className="error">✗ {error}</p>}
+
+          {loading && (
+            <div className="report-grid">
+              <div className="chart-card">
+                <h3>topic performance</h3>
+                <div className="skeleton skeleton-chart" />
+              </div>
+              <div className="chart-card">
+                <h3>weak topics</h3>
+                <div className="skeleton skeleton-list" />
+              </div>
+            </div>
+          )}
+
+          {report && (
+            <div className="report-grid">
+              <TopicChart topicAnalysis={report.topic_analysis} />
+              <WeakTopicsList weakTopics={report.weak_topics} />
+              <DifficultyChart difficultyAnalysis={report.difficulty_analysis} />
+              <ContestGapChart contestGap={report.contest_practice_gap} />
+
+              <RatingChart history={ratingHistory} loading={ratingLoading} />
+              {ratingError && !ratingLoading && (
+                <p className="error section-error">✗ {ratingError}</p>
+              )}
+
+              <RecommendationsList
+                recommendations={recommendations}
+                loading={recLoading}
+              />
+              {recError && !recLoading && (
+                <p className="error section-error">✗ {recError}</p>
+              )}
+            </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

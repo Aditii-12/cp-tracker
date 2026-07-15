@@ -6,7 +6,7 @@ export default function WeakTopicsList({ weakTopics }) {
   if (entries.length === 0) {
     return (
       <div className="chart-card">
-        <h3>Weak Topics</h3>
+        <h3>weak topics</h3>
         <p>No weak topics found — nice work!</p>
       </div>
     );
@@ -14,7 +14,7 @@ export default function WeakTopicsList({ weakTopics }) {
 
   return (
     <div className="chart-card">
-      <h3>Weak Topics</h3>
+      <h3>weak topics</h3>
       <table>
         <thead>
           <tr>
@@ -30,7 +30,9 @@ export default function WeakTopicsList({ weakTopics }) {
               <td>{topic}</td>
               <td>{stats.attempted}</td>
               <td>{stats.solved}</td>
-              <td>{(stats.success_rate * 100).toFixed(0)}%</td>
+              <td style={{ color: "#e5484d", fontFamily: "var(--font-mono)" }}>
+                {(stats.success_rate * 100).toFixed(0)}%
+              </td>
             </tr>
           ))}
         </tbody>
