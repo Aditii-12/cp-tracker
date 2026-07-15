@@ -17,7 +17,9 @@ venv.bak/
 reports/
 output/
 data/
-*.json
+reports/*.json
+output/*.json
+data/*.json
 
 # Python packaging
 .Python
