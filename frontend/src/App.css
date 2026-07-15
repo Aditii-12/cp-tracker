@@ -68,3 +68,71 @@ th, td {
   padding: 0.5rem;
   border-bottom: 1px solid #334155;
 }
+
+.section-error {
+  margin-top: -1rem;
+}
+
+.rating-summary {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.rec-group {
+  margin-bottom: 1.25rem;
+}
+
+.rec-group h4 {
+  margin-bottom: 0.5rem;
+  color: #4ade80;
+  text-transform: capitalize;
+}
+
+.rec-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rec-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #334155;
+}
+
+.rec-list a {
+  color: #e2e8f0;
+  text-decoration: none;
+}
+
+.rec-list a:hover {
+  color: #4ade80;
+}
+
+.rec-rating {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.skeleton {
+  background: #334155;
+  border-radius: 6px;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-chart {
+  height: 300px;
+  width: 100%;
+}
+
+.skeleton-list {
+  height: 160px;
+  width: 100%;
+}
